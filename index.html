@@ -5,19 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Планшет Машиниста</title>
     <style>
-        body { 
-            background: #1a1a1a; 
-            color: #00ff00; 
-            font-family: monospace; 
-            text-align: center; 
-            padding: 20px; 
-        }
-        .card { 
-            border: 2px solid #00ff00; 
-            padding: 15px; 
-            border-radius: 10px; 
-            box-shadow: 0 0 10px #00ff00;
-        }
+        body { background: #1a1a1a; color: #00ff00; font-family: monospace; text-align: center; padding: 20px; }
+        .card { border: 2px solid #00ff00; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px #00ff00; }
         .highlight { color: #ffa500; font-weight: bold; }
         hr { border-color: #00ff00; }
     </style>
@@ -27,30 +16,31 @@
     <div class="card">
         <h2>СТАТУС-ПАНЕЛЬ</h2>
         <hr>
-        <p>Машинист: <span id="username" class="highlight">Загрузка данных...</span></p>
-        <p>ID связи: <span id="userid" class="highlight">...</span></p>
+        <p>Машинист: <span id="username" class="highlight">Загрузка...</span></p>
+        <p>Броня: <span id="hp" class="highlight">...</span></p>
+        <p>Лом: <span id="scrap" class="highlight">...</span></p>
+        <p>Топливо: <span id="fuel" class="highlight">...</span></p>
         <hr>
         <p>Синхронизация с локомотивом установлена.</p>
     </div>
 
     <script>
-        // Инициализируем Telegram Web App
         let tg = window.Telegram.WebApp;
-        
-        // Говорим приложению открываться на всю высоту
         tg.expand(); 
-
-        // Вытаскиваем данные пользователя
+        
+        // 1. Берем имя из Телеграма
         let user = tg.initDataUnsafe.user;
-
         if (user) {
-            // Если данные есть, подставляем имя и ID в HTML
             document.getElementById('username').innerText = user.first_name;
-            document.getElementById('userid').innerText = user.id;
-        } else {
-            // Если открыли не из Телеграма (например, просто в браузере)
-            document.getElementById('username').innerText = "Неизвестный странник";
         }
+
+        // 2. Магия! Читаем ресурсы из ссылки, которую нам даст Python-бот
+        let params = new URLSearchParams(window.location.search);
+        
+        // Вставляем данные на экран (если данных нет в ссылке, пишем "Ошибка")
+        document.getElementById('hp').innerText = params.get('hp') || "Ошибка";
+        document.getElementById('scrap').innerText = params.get('scrap') + " 🔩" || "Ошибка";
+        document.getElementById('fuel').innerText = params.get('fuel') || "Ошибка";
     </script>
 </body>
 </html>
