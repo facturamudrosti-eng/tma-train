@@ -5,42 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Планшет Машиниста</title>
     <style>
-        body { background: #1a1a1a; color: #00ff00; font-family: monospace; text-align: center; padding: 20px; }
-        .card { border: 2px solid #00ff00; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px #00ff00; }
-        .highlight { color: #ffa500; font-weight: bold; }
-        hr { border-color: #00ff00; }
+        body { 
+            background-image: url('bg.jpg'); 
+            background-size: cover; 
+            background-position: center;
+            color: #00ffcc; /* Цвет светящихся цифр */
+            font-family: 'Courier New', Courier, monospace; 
+            font-weight: bold;
+            margin: 0;
+            overflow: hidden; /* Убираем прокрутку */
+            position: relative;
+            height: 100vh;
+        }
+        
+        /* Класс для плавающего текста */
+        .sensor-data {
+            position: absolute;
+            font-size: 22px;
+            text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; /* Эффект свечения экрана */
+            transform: translate(-50%, -50%); /* Центровка относительно координат */
+        }
+
+        /* --- НАСТРОЙКА КООРДИНАТ ДАТЧИКОВ --- */
+        /* Меняй проценты top (вверх-вниз) и left (влево-вправо), 
+           чтобы посадить цифры ровно в нарисованные экраны! */
+           
+        #username { top: 15%; left: 50%; font-size: 26px; color: #ffcc00; text-shadow: 0 0 10px #ffcc00; }
+        
+        #hp-container { top: 40%; left: 25%; }
+        #scrap-container { top: 40%; left: 75%; }
+        #fuel-container { top: 65%; left: 50%; font-size: 28px; color: #ff4444; text-shadow: 0 0 10px #ff4444; }
+
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="card">
-        <h2>СТАТУС-ПАНЕЛЬ</h2>
-        <hr>
-        <p>Машинист: <span id="username" class="highlight">Загрузка...</span></p>
-        <p>Броня: <span id="hp" class="highlight">...</span></p>
-        <p>Лом: <span id="scrap" class="highlight">...</span></p>
-        <p>Топливо: <span id="fuel" class="highlight">...</span></p>
-        <hr>
-        <p>Синхронизация с локомотивом установлена.</p>
+    
+    <div id="username" class="sensor-data">Машинист</div>
+    
+    <div id="hp-container" class="sensor-data">
+        <span id="hp">...</span> 🛡
+    </div>
+    
+    <div id="scrap-container" class="sensor-data">
+        <span id="scrap">...</span> 🔩
+    </div>
+    
+    <div id="fuel-container" class="sensor-data">
+        <span id="fuel">...</span> 🛢
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand(); 
         
-        // 1. Берем имя из Телеграма
         let user = tg.initDataUnsafe.user;
         if (user) {
             document.getElementById('username').innerText = user.first_name;
         }
 
-        // 2. Магия! Читаем ресурсы из ссылки, которую нам даст Python-бот
         let params = new URLSearchParams(window.location.search);
-        
-        // Вставляем данные на экран (если данных нет в ссылке, пишем "Ошибка")
-        document.getElementById('hp').innerText = params.get('hp') || "Ошибка";
-        document.getElementById('scrap').innerText = params.get('scrap') + " 🔩" || "Ошибка";
-        document.getElementById('fuel').innerText = params.get('fuel') || "Ошибка";
+        document.getElementById('hp').innerText = params.get('hp') || "-";
+        document.getElementById('scrap').innerText = params.get('scrap') || "-";
+        document.getElementById('fuel').innerText = params.get('fuel') || "-";
     </script>
 </body>
 </html>
